@@ -1,0 +1,23 @@
+# Build artifacts
+/build/
+*/build/
+*.obj
+*.o
+*.exe
+*.app
+*.dll
+*.dylib
+
+# OS junk
+.DS_Store
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+
+# JUCE binary data
+JuceLibraryCode/
+
+# User-specific
+.idea/
+.vscode/

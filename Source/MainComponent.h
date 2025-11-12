@@ -1,22 +1,22 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class MainComponent : public juce::Component
+class MainComponent : public juce::Component,
+                      private juce::Slider::Listener
 {
 public:
-    MainComponent() { setSize (640, 360); }
+    MainComponent();
     ~MainComponent() override = default;
 
-    void paint (juce::Graphics& g) override
-    {
-        g.fillAll (juce::Colours::black);
-        g.setColour (juce::Colours::white);
-        g.setFont (30.0f);
-        g.drawFittedText ("StemSonare", getLocalBounds(), juce::Justification::centred, 1);
-    }
-
-    void resized() override {}
+    void paint   (juce::Graphics&) override;
+    void resized() override;
 
 private:
+    // 4 sliders + labels
+    juce::Slider voiceSlider, bassSlider, drumsSlider, synthSlider;
+    juce::Label  voiceLabel,  bassLabel,  drumsLabel,  synthLabel;
+
+    void sliderValueChanged (juce::Slider* slider) override;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
