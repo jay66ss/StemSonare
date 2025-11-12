@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/jay/Developer/StemSonare/build/cmake_install.cmake",
+		"/Users/jay/Developer/StemSonare/build/juce/cmake_install.cmake",
+		"/Users/jay/Developer/StemSonare/build/juce/modules/cmake_install.cmake",
+		"/Users/jay/Developer/StemSonare/build/juce/extras/Build/cmake_install.cmake",
+		"/Users/jay/Developer/StemSonare/build/juce/extras/Build/juceaide/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
