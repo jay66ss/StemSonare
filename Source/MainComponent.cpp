@@ -18,7 +18,12 @@ namespace {
 }
 
 MainComponent::MainComponent()
-{
+{   
+    const bool okSend = oscSender.connect("127.0.0.1",7000);
+    jassert(okSend);
+
+    if (!connect(7001)) jassertfalse;
+    addListener(this, "/feedback");
     // Sliders
     for (auto* s : { &voiceSlider, &bassSlider, &drumsSlider, &synthSlider })
     {
@@ -41,6 +46,12 @@ void MainComponent::paint(juce::Graphics& g)
     g.fillAll(juce::Colours::black);
     g.setColour(juce::Colours::white.withAlpha(0.1f));
     g.drawRect(getLocalBounds().reduced(10));
+    auto meter = getLocalBounds().removeFromBottom(20).reduced(20, 0);
+    g.setColour(juce::Colours::grey.withAlpha(0.4f)); g.fillRect(meter);
+    g.setColour(juce::Colours::white);
+    auto w = int(meter.getWidth() * juce::jlimit(0.0f, 1.0f, feedbackValue));
+    g.fillRect(meter.removeFromLeft(w));
+
 }
 
 void MainComponent::resized()
@@ -64,8 +75,36 @@ void MainComponent::resized()
 
 void MainComponent::sliderValueChanged(juce::Slider* s)
 {
-    if      (s == &voiceSlider) juce::Logger::writeToLog("Voice: "  + juce::String((float)s->getValue(), 3));
-    else if (s == &bassSlider)  juce::Logger::writeToLog("Bass: "   + juce::String((float)s->getValue(), 3));
-    else if (s == &drumsSlider) juce::Logger::writeToLog("Drums: "  + juce::String((float)s->getValue(), 3));
-    else if (s == &synthSlider) juce::Logger::writeToLog("Synth: "  + juce::String((float)s->getValue(), 3));
+    if (s == &voiceSlider)
+    {
+        juce::Logger::writeToLog("Voice: " + juce::String((float)s->getValue(), 3));
+        oscSender.send("/slider/voice", (float)s->getValue());
+    }
+    else if (s == &bassSlider)
+    {
+        juce::Logger::writeToLog("Bass: " + juce::String((float)s->getValue(), 3));
+        oscSender.send("/slider/bass", (float)s->getValue());
+    }
+    else if (s == &drumsSlider)
+    {
+        juce::Logger::writeToLog("Drums: " + juce::String((float)s->getValue(), 3));
+        oscSender.send("/slider/drums", (float)s->getValue());
+    }
+    else if (s == &synthSlider)
+    {
+        juce::Logger::writeToLog("Synth: " + juce::String((float)s->getValue(), 3));
+        oscSender.send("/slider/synth", (float)s->getValue());
+    }
+    
 }
+void MainComponent::oscMessageReceived (const juce::OSCMessage& msg)
+{
+    if (msg.getAddressPattern().toString() == "/feedback"
+        && msg.size() > 0 && msg[0].isFloat32())
+    {
+        feedbackValue = msg[0].getFloat32(); // 0..1
+        repaint();
+    }
+}
+
+
