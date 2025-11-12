@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-eef9bf3d50874ab0f63e5dfb289a354c StemSonare_artefacts/JuceLibraryCode/StemSonare/PkgInfo
